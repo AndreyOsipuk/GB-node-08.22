@@ -1,4 +1,4 @@
-#!/C/Program\ Files/nodejs
+#!/usr/bin/env node
 // #!/home/andrey/.nvm/versions/node/v16.13.2/bin/node
 
 const fs = require('fs');
