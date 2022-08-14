@@ -9,6 +9,7 @@ import mongoose from 'mongoose'
 import cowsay from 'cowsay'
 
 const URL = process.env.MONGO_URL as string
+console.log("URL", URL)
 mongoose.connect(URL).then(() => {
   console.log(cowsay.say({
     text : "Mongoose connected",
