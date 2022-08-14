@@ -8,9 +8,9 @@ import MessageRouter from './routes/messages'
 import mongoose from 'mongoose'
 import cowsay from 'cowsay'
 
-const URL = process.env.MONGO_URL as string
-console.log("URL", URL)
-mongoose.connect(URL).then(() => {
+const URI = process.env.MONGODB_URI as string
+
+mongoose.connect(URI).then(() => {
   console.log(cowsay.say({
     text : "Mongoose connected",
     e : "oO",
@@ -28,4 +28,4 @@ app.get('/status', (req, res) => res.send('OK'))
 app.use('/chats', ChatRouter)
 app.use('/messages', MessageRouter)
 
-app.listen(5555, () => console.log(`Server has been started to http://localhost:5555`))
+app.listen(process.env.PORT || 5000, () => console.log(`Server has been started to http://localhost:${process.env.PORT}`))
