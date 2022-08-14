@@ -1,12 +1,15 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 
+import 'dotenv/config'
+
 import ChatRouter from './routes/chats'
 import MessageRouter from './routes/messages'
 import mongoose from 'mongoose'
 import cowsay from 'cowsay'
 
-mongoose.connect('mongodb://localhost:27017/gb').then(() => {
+const URL = process.env.MONGO_URL as string
+mongoose.connect(URL).then(() => {
   console.log(cowsay.say({
     text : "Mongoose connected",
     e : "oO",
