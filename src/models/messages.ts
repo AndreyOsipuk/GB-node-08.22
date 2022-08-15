@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const { Schema, model } = mongoose;
 
 const messagesSchema = new Schema({
-  // TODO сделать связь между коллекциями
+  // TODO сделать связь между коллекциями $ref
   chatId: {
     type: String,
     required: true,

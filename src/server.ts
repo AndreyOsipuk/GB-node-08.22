@@ -1,31 +1,43 @@
-import express from 'express'
-import bodyParser from 'body-parser'
+import express from "express";
 
-import 'dotenv/config'
+import "dotenv/config";
 
-import ChatRouter from './routes/chats'
-import MessageRouter from './routes/messages'
-import mongoose from 'mongoose'
-import cowsay from 'cowsay'
+import ChatRouter from "./routes/chats";
+import MessageRouter from "./routes/messages";
+import AuthRouter from "./routes/auth";
 
-const URI = process.env.MONGODB_URI as string
+import mongoose from "mongoose";
+import { errorMiddleware } from "./middlewares/error";
+import { verifyToken } from './middlewares/tokenVerify';
 
-mongoose.connect(URI).then(() => {
-  console.log(cowsay.say({
-    text : "Mongoose connected",
-    e : "oO",
-    T : "U "
-}));
-}).catch(error => console.log(error));
+const URI = process.env.MONGODB_URI as string;
 
-const app = express()
+mongoose
+  .connect(URI)
+  .then(() => console.log("Mongoose connected"))
+  .catch((error) => console.log(error));
 
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+const app = express();
 
-app.get('/status', (req, res) => res.send('OK'))
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
-app.use('/chats', ChatRouter)
-app.use('/messages', MessageRouter)
+app.get("/status", (_, res) => res.send("OK"));
 
-app.listen(process.env.PORT || 5000, () => console.log(`Server has been started to http://localhost:${process.env.PORT}`))
+app.use("/chats", ChatRouter);
+app.use("/messages", MessageRouter);
+app.use("/", AuthRouter);
+
+app.get("/profile", verifyToken, (req, res) => {
+  res.send('Im secured')
+});
+
+app.use(errorMiddleware);
+
+app.all("*", (_, res) => {
+  res.status(404).json({ error: 404 });
+});
+
+app.listen(process.env.PORT || 5000, () =>
+  console.log(`Server has been started to http://localhost:${process.env.PORT}`)
+);

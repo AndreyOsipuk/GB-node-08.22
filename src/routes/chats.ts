@@ -1,5 +1,10 @@
-import express from "express";
+import express, { Request } from "express";
 import { Chats } from "../models/chats";
+
+export interface TypedRequestBody<T> extends Request {
+  body: T;
+}
+
 const router = express.Router();
 
 router
@@ -7,15 +12,15 @@ router
     const chats = await Chats.find();
     res.json(chats);
   })
-  .post("/", async (req, res) => {
-    try {
-      const newChat = await Chats.create(req.body);
+  .post("/", async (req: TypedRequestBody<{ name: string }>, res, next) => {
+    await Chats.create(req.body, (err: Error, newChat: typeof Chats) => {
+      if (err) {
+        next(err);
+      }
+
       res.status(201);
       res.json(newChat);
-    } catch (err) {
-      res.status(500);
-      res.send(err);
-    }
+    });
   })
   .delete("/:id", async (req, res) => {
     const deleted = await Chats.findByIdAndDelete(req.params.id);
