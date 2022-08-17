@@ -20,7 +20,7 @@ const app = (dir,word)=>{
             }
         ).then((answer)=>{
                 dir = dir + `/${answer.fileName}`
-                app(dir)
+                app(dir,word)
         })}
 
     else {        
@@ -31,8 +31,8 @@ const app = (dir,word)=>{
             terminal :true
         })
         r1.on('line',(line)=>{
-            if(line.includes('мамапа'))
-            writeStream.write('мамапа'+ '\n')
+            if(line.includes(word))
+            writeStream.write(word+ '\n')
         })
         r1.on('end',(end) =>{
             console.log(color.green('Песента спета'))
