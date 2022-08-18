@@ -14,3 +14,4 @@ let timer;
 let x =10
 countdown(); // вызов функции
 
+console.log('Изменения')
