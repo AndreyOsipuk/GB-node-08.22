@@ -3,10 +3,31 @@ const inquirer = require('inquirer');
 const readline = require('readline')
 const color = require('colors')
 
-const dir = 'C:/Users/User/Desktop'
-word = 'стримы'
+// const dir = 'C:/Users/User/Desktop'
+const r1 = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+})
 
-const app = (dir,word)=>{
+const ques = (question) =>{
+    return new Promise((res)=>{
+        r1.question(question,(answer) =>{
+        const word = `${answer}`
+        res(word)
+    })
+}
+)}
+
+ques(color.cyan('Какое слово или строчку ты хочешь найти, босс?')+'\n')
+    .then((word)=>{
+        r1.question(color.cyan('Задай директории, босс') + '\n',(answer)=>{
+            const dir = `${answer}`
+            app(dir,word)
+        })
+
+    })
+
+const app = async (dir,word)=>{
     let static = fs.statSync(dir) 
 
     if(static.isDirectory()) {
@@ -26,18 +47,17 @@ const app = (dir,word)=>{
     else {        
         let readStream = fs.createReadStream(dir)
         let writeStream = fs.createWriteStream('./data/data.log')
-        let r1 = readline.createInterface({
+        let r2 = readline.createInterface({
             input: readStream,
             terminal :true
         })
-        r1.on('line',(line)=>{
-            if(line.includes(word))
-            writeStream.write(word+ '\n')
-        })
-        r1.on('end',(end) =>{
-            console.log(color.green('Песента спета'))
+        r2.on('line',(line)=>{
+            if(line.includes(word)){
+                writeStream.write(word+ '\n')
+                console.log(color.green('Я нашёл, что вы искали, босс: ')+word)
+            }
+            else console.log(color.red('Я ничего не нашёл, босс'))
         })
     }
 }
 
-app(dir, word)
